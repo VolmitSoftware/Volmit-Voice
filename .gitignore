@@ -14,3 +14,5 @@ patron_auths.json
 push.bat
 secondaries.txt
 venv.bat
+
+.idea/
