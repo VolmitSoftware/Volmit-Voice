@@ -194,19 +194,6 @@ async def main_loop(client):
         if cfg.TIMINGS[fn_name] > 20:
             await func.log_timings(client, fn_name)
 
-        # Check for new patrons using patron role in support server
-        if cfg.SAPPHIRE_ID is None:
-            try:
-                num_patrons = len(
-                    client.get_guild(601015720200896512).get_role(606482184043364373).members)
-            except AttributeError:
-                pass
-            else:
-                if cfg.NUM_PATRONS != num_patrons:
-                    if cfg.NUM_PATRONS != -1:  # Skip first run, since patrons are fetched on startup already.
-                        await func.check_patreon(force_update=(not DEV_BOT), client=client)
-                    cfg.NUM_PATRONS = num_patrons
-
 
 @loop(seconds=cfg.CONFIG['loop_interval'])
 async def creation_loop(client):
@@ -643,13 +630,6 @@ async def update_status(client):
             except Exception as e:
                 log("Failed to update status: {}".format(type(e).__name__))
 
-
-@loop(hours=3)
-async def check_patreon():
-    # Will run at startup too, since it doesn't have to wait for client.is_ready
-    await func.check_patreon(force_update=cfg.SAPPHIRE_ID in [None, 0] and not DEV_BOT)
-
-
 loops = {  # loops with client as only arg - passed to admin_commands's `loop` cmd
     'main_loop': main_loop,
     'deletion_loop': deletion_loop,
@@ -943,8 +923,6 @@ async def on_message(message):
             'print_prefix': print_prefix,
             'prefix_p': prefix_p,
             'command': cmd,
-            'gold': func.is_gold(guild),
-            'sapphire': func.is_sapphire(guild),
             'settings': settings,
             'message': message,
             'channel': channel,
@@ -1224,5 +1202,4 @@ async def on_guild_remove(guild):
 cleanup(client=client, tick_=1)
 for ln, l in loops.items():
     l.start(client)
-check_patreon.start()
 client.run(TOKEN)

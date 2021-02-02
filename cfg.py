@@ -17,13 +17,6 @@ TIER_ICONS = {
 GUILD_SETTINGS = {}
 PREV_GUILD_SETTINGS = {}
 
-# Store Patreon stuff so we can use it globally and don't have to read it all on every is_gold check
-PATREON_DATA = {}
-PATRONS = {}
-NUM_PATRONS = -1
-GOLD_SERVERS = []
-SAPPHIRE_SERVERS = []
-
 # Track writes in progress so we don't exit during a write operation
 WRITES_IN_PROGRESS = []
 
